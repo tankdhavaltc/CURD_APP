@@ -1,5 +1,4 @@
-import React from 'react'
-import "./NavBar.css";
+import React from 'react';
 import AddEditUser from '../AddEditUser/AddEditUser';
 
 const NavBar = ({ setAllUsers, handelAddUser, allUsers }) => {

@@ -11,7 +11,6 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route index element={<App />} />
-        <Route path='/users/all' exact element={<App />} />
         <Route path='/user/add' exact element={<App />} />
         <Route path='/user/edit/:id' exact element={<App />} />
       </Routes>
