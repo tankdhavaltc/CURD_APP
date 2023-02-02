@@ -7,7 +7,7 @@ const NavBar = ({ setAllUsers, handelAddUser, allUsers }) => {
         <>
             <div className="d-flex justify-content-between flex-wrap align-content-center">
                 <div className="title">
-                    <h3>Add User ({`${allUsers.length}`})</h3>
+                    <h3>Users ({`${allUsers.length}`})</h3>
                 </div>
                 <div className="">
                     <button type="button" onClick={handelAddUser} className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">

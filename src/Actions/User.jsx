@@ -32,7 +32,7 @@ export const getAllUsers = () => async (dispatch) => {
             header: { "Content-type": "application/json" },
         };
 
-        const { data } = await axios.get(`${API}/users`, config);
+        const { data } = await axios.get(`${API}`, config);
 
         dispatch({ type: ALL_USERS_SUCCESS, payload: [...data] });
 
@@ -51,7 +51,7 @@ export const addUser = (userData) => async (dispatch) => {
         const config = {
             header: { "Content-type": "multipart/form-data" },
         };
-        const { data, status } = await axios.post(`${API}/users`, userData, config);
+        const { data, status } = await axios.post(`${API}`, userData, config);
         if (status === 201)
             dispatch({ type: ADD_USER_SUCCESS, payload: data });
 
@@ -69,7 +69,7 @@ export const editUser = (id, user) => async (dispatch) => {
 
         const config = { headers: { "Content-Type": "application/json" } };
 
-        const res = await axios.put(`${API}/users/${id}`, user, config);
+        const res = await axios.put(`${API}/${id}`, user, config);
         if (res.status === 200)
             dispatch({ type: UPDATE_USER_SUCCESS, payload: { ...user, _id: id } });
     } catch (error) {
@@ -85,7 +85,7 @@ export const getUserDetails = (id) => async (dispatch) => {
     try {
         dispatch({ type: USER_DETAILS_REQUEST });
 
-        const { data } = await axios.get(`${API}/users/${id}`);
+        const { data } = await axios.get(`${API}/${id}`);
 
         dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
     } catch (error) {
