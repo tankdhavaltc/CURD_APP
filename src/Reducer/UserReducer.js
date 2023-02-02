@@ -41,8 +41,10 @@ export const userReducer = (state = { user: {} }, action) => {
     }
 };
 
-export const profileReducer = (state = { user: {} }, action) => {
-    switch (action.type) {
+export const profileReducer = (state = { user: {} }, { type, payload }) => {
+    console.log('type :', type)
+    console.log('payload :', payload)
+    switch (type) {
         case UPDATE_USER_REQUEST:
         case DELETE_USER_REQUEST:
             return {
@@ -53,7 +55,7 @@ export const profileReducer = (state = { user: {} }, action) => {
             return {
                 ...state,
                 loading: false,
-                user: action.payload,
+                user: payload,
                 isUpdated: true,
             };
         case DELETE_USER_SUCCESS:
@@ -61,14 +63,14 @@ export const profileReducer = (state = { user: {} }, action) => {
                 ...state,
                 loading: false,
                 isDeleted: true,
-                deletedId: action.payload,
+                deletedId: payload,
             };
         case UPDATE_USER_FAIL:
         case DELETE_USER_FAIL:
             return {
                 ...state,
                 loading: false,
-                error: action.payload,
+                error: payload,
                 isUpdated: false,
             };
         case UPDATE_USER_RESET:

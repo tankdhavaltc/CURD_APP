@@ -3,12 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { addUser, editUser } from '../../Actions/User';
-import { ADD_USER_RESET, UPDATE_USER_RESET } from '../../constants/userConstants';
-import "./AddEditUser.css";
+import { userReset } from '../../Features/Users/userSlice';
 
 const AddEditUser = ({ setAllUsers, allUsers }) => {
-    const { isUpdated, user: updatedUser } = useSelector((state) => state.profile);
-    const { isAdded, user: newUser } = useSelector((state) => state.user);
+    const { isAdded, userData: newUser, isEdited, isDeleted, deletedId, message, editedUser } = useSelector((state) => state.user);
     const [userDetail, setUserDetails] = useState();
     let navigation = useNavigate()
     const closeRef = useRef(null);
@@ -141,18 +139,35 @@ const AddEditUser = ({ setAllUsers, allUsers }) => {
     }, [id, allUsers]);
 
     useEffect(() => {
-        if (isUpdated) {
+
+        if (isEdited) {
             toast.success("User edited.");
-            dispatch({ type: UPDATE_USER_RESET });
-            let index = allUsers.findIndex(user => user._id === updatedUser._id);
-            allUsers.splice(index, 1, updatedUser);
+            dispatch(userReset());
+            let index = allUsers.findIndex(user => user._id === editedUser._id);
+            let tempData = [...allUsers];
+            tempData.splice(index, 1, editedUser);
+            setAllUsers(tempData);
         }
+
+        if (isDeleted) {
+            toast.success("User delete successfully.");
+            dispatch(userReset());
+            let newUsers = allUsers.filter((user) => user._id !== deletedId);
+            setAllUsers(newUsers);
+        }
+
+        if (message !== "") {
+            toast.error(message);
+            dispatch(userReset());
+        }
+
         if (isAdded) {
             toast.success("User Added.");
-            dispatch({ type: ADD_USER_RESET });
+            dispatch(userReset());
             setAllUsers(prev => [...prev, newUser]);
         }
-    }, [allUsers, dispatch, isAdded, isUpdated, newUser, setAllUsers, updatedUser]);
+
+    }, [allUsers, deletedId, dispatch, editedUser, isAdded, isDeleted, isEdited, message, newUser, setAllUsers]);
 
     return (
         <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

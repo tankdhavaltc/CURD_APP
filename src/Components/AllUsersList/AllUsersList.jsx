@@ -1,46 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import NavBar from '../NavBar/NavBar'
-import { deleteUser } from '../../Actions/User';
-import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
-import { DELETE_USER_RESET } from '../../constants/userConstants';
+import NavBar from '../NavBar/NavBar';
+import { useSelector } from 'react-redux';
+import UserDetails from './UserDetails';
 
 const AllUsersList = () => {
-    const { loading, users } = useSelector((state) => state.allUsers);
+    const { loading, usersData } = useSelector(state => state.users);
     const [allUsers, setAllUsers] = useState([]);
-    const dispatch = useDispatch();
     const navigater = useNavigate();
-    const { error: deleteError, deletedId, isDeleted } = useSelector(
-        (state) => state.profile
-    );
-
-    const handelDeleteUser = (id) => {
-        dispatch(deleteUser(id));
-    }
 
     const handelAddUser = () => {
         navigater(`/user/add`);
     }
 
-    const handelEditUser = (id) => {
-        navigater(`/user/edit/${id}`);
-    }
-
-    useEffect(() => {
-        if (isDeleted) {
-            toast.success("User delete successfully.");
-            dispatch({ type: DELETE_USER_RESET });
-            let newUsers = allUsers.filter((user) => user._id !== deletedId);
-            setAllUsers(newUsers);
-        }
-    }, [allUsers, deleteError, deletedId, dispatch, isDeleted])
-
     useEffect(() => {
         if (loading === false) {
-            setAllUsers(users);
+            setAllUsers(usersData);
         }
-    }, [loading, users])
+    }, [loading, usersData]);
 
     return (
         <div className='container mt-3'>
@@ -67,23 +44,7 @@ const AllUsersList = () => {
                             </thead>
                             <tbody>
                                 {allUsers.map((user, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            <th>{index + 1}</th>
-                                            <td>{user.name}</td>
-                                            <td>{user.email}</td>
-                                            <td>{user.contact_no}</td>
-                                            <td>{user.date_of_birth}</td>
-                                            <td>{user.address}</td>
-                                            <td>{user.business_name}</td>
-                                            <td>
-                                                <div className='d-flex gap-3 flex-wrap'>
-                                                    <i data-bs-toggle="modal" data-bs-target="#exampleModal" className="edit-btn fa-regular fa-pen-to-square" onClick={() => handelEditUser(user._id)}></i>
-                                                    <i className="delete-btn fa-solid fa-trash" onClick={() => handelDeleteUser(user._id)}></i>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    )
+                                    return <UserDetails setAllUsers={setAllUsers} allUsers={allUsers} userId={user._id} index={index} user={user} key={index} />
                                 })}
                             </tbody>
                         </table>
