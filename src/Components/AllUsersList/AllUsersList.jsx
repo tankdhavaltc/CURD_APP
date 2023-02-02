@@ -77,8 +77,10 @@ const AllUsersList = () => {
                                             <td>{user.address}</td>
                                             <td>{user.business_name}</td>
                                             <td>
-                                                <i data-bs-toggle="modal" data-bs-target="#exampleModal" className="edit-btn fa-regular fa-pen-to-square" onClick={() => handelEditUser(user._id)}></i>
-                                                <i className="delete-btn fa-solid fa-trash" onClick={() => handelDeleteUser(user._id)}></i>
+                                                <div className='d-flex gap-3 flex-wrap'>
+                                                    <i data-bs-toggle="modal" data-bs-target="#exampleModal" className="edit-btn fa-regular fa-pen-to-square" onClick={() => handelEditUser(user._id)}></i>
+                                                    <i className="delete-btn fa-solid fa-trash" onClick={() => handelDeleteUser(user._id)}></i>
+                                                </div>
                                             </td>
                                         </tr>
                                     )

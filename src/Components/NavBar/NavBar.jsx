@@ -4,17 +4,19 @@ import AddEditUser from '../AddEditUser/AddEditUser';
 
 const NavBar = ({ setAllUsers, handelAddUser, allUsers }) => {
     return (
-        <div className="d-flex justify-content-between flex-wrap align-content-center">
-            <div className="title">
-                <h3>Add User</h3>
+        <>
+            <div className="d-flex justify-content-between flex-wrap align-content-center">
+                <div className="title">
+                    <h3>Add User ({`${allUsers.length}`})</h3>
+                </div>
+                <div className="">
+                    <button type="button" onClick={handelAddUser} className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        Add User
+                    </button>
+                </div>
             </div>
-            <div className="">
-                <button type="button" onClick={handelAddUser} className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    Add User
-                </button>
-                <AddEditUser setAllUsers={setAllUsers} allUsers={allUsers} />
-            </div>
-        </div>
+            <AddEditUser setAllUsers={setAllUsers} allUsers={allUsers} />
+        </>
     )
 }
 
