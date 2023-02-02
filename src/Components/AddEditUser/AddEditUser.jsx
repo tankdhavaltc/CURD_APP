@@ -6,11 +6,13 @@ import { addUser, editUser, getAllUsers } from '../../Actions/User';
 import "./AddEditUser.css";
 
 const AddEditUser = ({ gatAllUsers, users }) => {
+    const [user, setUser] = useState();
     const closeRef = useRef(null);
     const navigater = useNavigate();
     const dispatch = useDispatch();
     const { id } = useParams();
     const [isEdit, setIsEdit] = useState(false);
+    const [isError, setIsError] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -34,7 +36,7 @@ const AddEditUser = ({ gatAllUsers, users }) => {
             address: "",
             business_name: ""
         });
-        navigater("/");
+        window.history.go("/");
         closeRef.current.click();
         setIsEdit(false);
     }
@@ -60,51 +62,72 @@ const AddEditUser = ({ gatAllUsers, users }) => {
         }
         else {
             if (isEdit) {
-                // if (checkEmail() < 2) {
-                dispatch(editUser(id, {
-                    name: name.trim(),
-                    email: email.trim(),
-                    contact_no: contact_no.toString().trim(),
-                    date_of_birth: date_of_birth.toString().trim(),
-                    address: address.trim(),
-                    business_name: business_name.trim()
-                }));
-                toast.success("User edited.");
-                handelClose();
-                gatAllUsers();
-                // } else {
-                //     toast.warning("Email is already exists");
-                // }
+                setIsError(false);
+                if (user[0].email !== formData.email.trim()) {
+                    if (checkEmail(formData.email.trim()) < 1) {
+                        setIsError(false);
+                        if (!isError) {
+                            dispatch(editUser(id, {
+                                name: name.trim(),
+                                email: email.trim(),
+                                contact_no: contact_no.toString().trim(),
+                                date_of_birth: date_of_birth.toString().trim(),
+                                address: address.trim(),
+                                business_name: business_name.trim()
+                            }));
+                            toast.success("User edited.");
+                            handelClose();
+                            setIsError(false);
+                        }
+                    }
+                    else {
+                        setIsError(true);
+                        toast.warning("Email is already exists");
+                    }
+                } else {
+                    if (!isError) {
+                        dispatch(editUser(id, {
+                            name: name.trim(),
+                            email: email.trim(),
+                            contact_no: contact_no.toString().trim(),
+                            date_of_birth: date_of_birth.toString().trim(),
+                            address: address.trim(),
+                            business_name: business_name.trim()
+                        }));
+                        toast.success("User edited.");
+                        handelClose();
+                        setIsError(false);
+                    }
+                }
             } else {
-                // if (checkEmail() === 0) {
-                dispatch(addUser({
-                    name: name.trim(),
-                    email: email.trim(),
-                    contact_no: contact_no.toString().trim(),
-                    date_of_birth: date_of_birth.toString().trim(),
-                    address: address.trim(),
-                    business_name: business_name.trim()
-                }));
-                toast.success("User added.");
-                handelClose();
-                gatAllUsers();
-                // } else {
-                //     toast.warning("Email is already exists");
-                // }
+
+                if (checkEmail(formData.email.trim()) === 0) {
+                    dispatch(addUser({
+                        name: name.trim(),
+                        email: email.trim(),
+                        contact_no: contact_no.toString().trim(),
+                        date_of_birth: date_of_birth.toString().trim(),
+                        address: address.trim(),
+                        business_name: business_name.trim()
+                    }));
+                    toast.success("User added.");
+                    handelClose();
+                } else {
+                    toast.warning("Email is already exists");
+                }
             }
         }
     }
 
-
-    // const checkEmail = () => {
-    //     const checkEmail = users.filter((item) => item.email === formData.email.trim());
-    //     return checkEmail.length;
-    // }
+    const checkEmail = (email) => {
+        return users.filter((item) => item.email === email).length;
+    }
 
     useEffect(() => {
         if (id) {
             setIsEdit(true);
             const tempUser = users.filter((item) => item._id === id);
+            setUser(tempUser);
             setFormData({
                 name: tempUser[0]?.name,
                 email: tempUser[0]?.email,

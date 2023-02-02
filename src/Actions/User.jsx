@@ -2,7 +2,7 @@ import axios from "axios";
 import { ADD_USER_FAIL, ADD_USER_REQUEST, ADD_USER_SUCCESS, ALL_USERS_FAIL, ALL_USERS_REQUEST, ALL_USERS_SUCCESS, CLEAR_ERRORS, CLEAR_MESSAGE, DELETE_USER_FAIL, DELETE_USER_REQUEST, DELETE_USER_SUCCESS, UPDATE_USER_FAIL, UPDATE_USER_REQUEST, UPDATE_USER_SUCCESS, USER_DETAILS_FAIL, USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS } from "../constants/userConstants";
 
 // const API = process.env.REACT_APP_API_LINK;
-const API = "https://crudcrud.com/api/0c92176499014405b618bd92f64ce0f0";
+const API = "https://crudcrud.com/api/a6fb3ed4e4794e739783ad6fe41ce137";
 
 
 // clear error
@@ -52,7 +52,6 @@ export const getAllUsers = () => async (dispatch) => {
         dispatch({ type: ALL_USERS_SUCCESS, payload: [...data] });
 
     } catch (error) {
-        console.log(error);
         dispatch({
             type: ALL_USERS_FAIL,
             payload: error.response.data.message,
