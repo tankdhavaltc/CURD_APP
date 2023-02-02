@@ -1,16 +1,17 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../NavBar/NavBar'
-import { clearErrors, deleteUser, getAllUsers } from '../../Actions/User';
+import { deleteUser } from '../../Actions/User';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { DELETE_USER_RESET } from '../../constants/userConstants';
 
 const AllUsersList = () => {
+    const { loading, users } = useSelector((state) => state.allUsers);
+    const [allUsers, setAllUsers] = useState([]);
     const dispatch = useDispatch();
     const navigater = useNavigate();
-    const { error, users } = useSelector((state) => state.allUsers);
-    const { error: deleteError, isDeleted } = useSelector(
+    const { error: deleteError, deletedId, isDeleted } = useSelector(
         (state) => state.profile
     );
 
@@ -27,23 +28,24 @@ const AllUsersList = () => {
     }
 
     useEffect(() => {
-        if (deleteError) {
-            toast.error(error);
-            dispatch(clearErrors());
-        }
         if (isDeleted) {
             toast.success("User delete successfully.");
             dispatch({ type: DELETE_USER_RESET });
-            dispatch(getAllUsers());
+            let newUsers = allUsers.filter((user) => user._id !== deletedId);
+            setAllUsers(newUsers);
         }
-    }, [deleteError, dispatch, error, isDeleted])
+    }, [allUsers, deleteError, deletedId, dispatch, isDeleted])
 
-
+    useEffect(() => {
+        if (loading === false) {
+            setAllUsers(users);
+        }
+    }, [loading, users])
 
     return (
         <div className='container mt-3'>
-            <NavBar users={users} handelAddUser={handelAddUser} />
-            {users.length === 0 ? (
+            <NavBar allUsers={allUsers} setAllUsers={setAllUsers} handelAddUser={handelAddUser} />
+            {(allUsers?.length === 0 && loading === false) ? (
                 <div className="mt-3">
                     <h3 className='text-center'>Users Not Found.</h3>
                 </div>
@@ -64,7 +66,7 @@ const AllUsersList = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {users.map((user, index) => {
+                                {allUsers.map((user, index) => {
                                     return (
                                         <tr key={index}>
                                             <th>{index + 1}</th>

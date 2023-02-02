@@ -2,7 +2,7 @@ import axios from "axios";
 import { ADD_USER_FAIL, ADD_USER_REQUEST, ADD_USER_SUCCESS, ALL_USERS_FAIL, ALL_USERS_REQUEST, ALL_USERS_SUCCESS, CLEAR_ERRORS, CLEAR_MESSAGE, DELETE_USER_FAIL, DELETE_USER_REQUEST, DELETE_USER_SUCCESS, UPDATE_USER_FAIL, UPDATE_USER_REQUEST, UPDATE_USER_SUCCESS, USER_DETAILS_FAIL, USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS } from "../constants/userConstants";
 
 // const API = process.env.REACT_APP_API_LINK;
-const API = "https://crudcrud.com/api/f392f9d834e84e92ab3a53e92ef5f3b9";
+const API = "https://crudcrud.com/api/f757a53d019b4232a74e147e38d2b4a6";
 
 
 // clear error
@@ -26,9 +26,9 @@ export const deleteUser = (id) => async (dispatch) => {
 
         const config = { headers: { "Content-Type": "application/json" } };
 
-        const { data } = await axios.delete(`${API}/users/${id}`, config);
+         await axios.delete(`${API}/users/${id}`, config);
 
-        dispatch({ type: DELETE_USER_SUCCESS, payload: data });
+        dispatch({ type: DELETE_USER_SUCCESS, payload: id });
     } catch (error) {
         dispatch({
             type: DELETE_USER_FAIL,
@@ -66,10 +66,9 @@ export const addUser = (userData) => async (dispatch) => {
         const config = {
             header: { "Content-type": "multipart/form-data" },
         };
-
-        const { data } = await axios.post(`${API}/users`, userData, config);
-
-        dispatch({ type: ADD_USER_SUCCESS, payload: data });
+        const { data, status } = await axios.post(`${API}/users`, userData, config);
+        if (status === 201)
+            dispatch({ type: ADD_USER_SUCCESS, payload: data });
 
     } catch (error) {
         dispatch({
@@ -85,9 +84,9 @@ export const editUser = (id, user) => async (dispatch) => {
 
         const config = { headers: { "Content-Type": "application/json" } };
 
-        const { data } = await axios.put(`${API}/users/${id}`, user, config);
-
-        dispatch({ type: UPDATE_USER_SUCCESS, payload: data });
+        const res = await axios.put(`${API}/users/${id}`, user, config);
+        if (res.status === 200)
+            dispatch({ type: UPDATE_USER_SUCCESS, payload: { ...user, _id: id } });
     } catch (error) {
         dispatch({
             type: UPDATE_USER_FAIL,

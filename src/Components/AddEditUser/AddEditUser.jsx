@@ -2,14 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { addUser, editUser, getAllUsers } from '../../Actions/User';
+import { addUser, editUser } from '../../Actions/User';
 import { ADD_USER_RESET, UPDATE_USER_RESET } from '../../constants/userConstants';
 import "./AddEditUser.css";
 
-const AddEditUser = ({ users }) => {
-    const { isUpdated } = useSelector((state) => state.profile);
-    const { isAdded } = useSelector((state) => state.user);
-    const [user, setUser] = useState();
+const AddEditUser = ({ setAllUsers, allUsers }) => {
+    const { isUpdated, user: updatedUser } = useSelector((state) => state.profile);
+    const { isAdded, user: newUser } = useSelector((state) => state.user);
+    const [userDetail, setUserDetails] = useState();
     let navigation = useNavigate()
     const closeRef = useRef(null);
     const dispatch = useDispatch();
@@ -66,7 +66,7 @@ const AddEditUser = ({ users }) => {
         else {
             if (isEdit) {
                 setIsError(false);
-                if (user[0].email !== formData.email.trim()) {
+                if (userDetail[0].email !== formData.email.trim()) {
                     if (checkEmail(formData.email.trim()) < 1) {
                         setIsError(false);
                         if (!isError) {
@@ -121,14 +121,14 @@ const AddEditUser = ({ users }) => {
     }
 
     const checkEmail = (email) => {
-        return users.filter((item) => item.email === email).length;
+        return allUsers.filter((item) => item.email === email).length;
     }
 
     useEffect(() => {
         if (id) {
             setIsEdit(true);
-            const tempUser = users.filter((item) => item._id === id);
-            setUser(tempUser);
+            const tempUser = allUsers.filter((item) => item._id === id);
+            setUserDetails(tempUser);
             setFormData({
                 name: tempUser[0]?.name,
                 email: tempUser[0]?.email,
@@ -138,20 +138,21 @@ const AddEditUser = ({ users }) => {
                 business_name: tempUser[0]?.business_name,
             });
         }
-    }, [id, users]);
+    }, [id, allUsers]);
 
     useEffect(() => {
         if (isUpdated) {
             toast.success("User edited.");
             dispatch({ type: UPDATE_USER_RESET });
-            dispatch(getAllUsers());
+            let index = allUsers.findIndex(user => user._id === updatedUser._id);
+            allUsers.splice(index, 1, updatedUser);
         }
         if (isAdded) {
             toast.success("User Added.");
             dispatch({ type: ADD_USER_RESET });
-            dispatch(getAllUsers());
+            setAllUsers(prev => [...prev, newUser]);
         }
-    }, [dispatch, isAdded, isUpdated]);
+    }, [allUsers, dispatch, isAdded, isUpdated, newUser, setAllUsers, updatedUser]);
 
     return (
         <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -2,7 +2,7 @@ import React from 'react'
 import "./NavBar.css";
 import AddEditUser from '../AddEditUser/AddEditUser';
 
-const NavBar = ({ handelAddUser, users }) => {
+const NavBar = ({ setAllUsers, handelAddUser, allUsers }) => {
     return (
         <div className="d-flex justify-content-between flex-wrap align-content-center">
             <div className="title">
@@ -12,7 +12,7 @@ const NavBar = ({ handelAddUser, users }) => {
                 <button type="button" onClick={handelAddUser} className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                     Add User
                 </button>
-                <AddEditUser users={users} />
+                <AddEditUser setAllUsers={setAllUsers} allUsers={allUsers} />
             </div>
         </div>
     )

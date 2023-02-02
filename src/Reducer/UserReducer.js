@@ -61,6 +61,7 @@ export const profileReducer = (state = { user: {} }, action) => {
                 ...state,
                 loading: false,
                 isDeleted: true,
+                deletedId: action.payload,
             };
         case UPDATE_USER_FAIL:
         case DELETE_USER_FAIL:

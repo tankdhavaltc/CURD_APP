@@ -11,7 +11,6 @@ import Loader from "./Components/Loader/Loader";
 import AllUsersList from "./Components/AllUsersList/AllUsersList";
 
 const App = () => {
-
     const { loading } = useSelector((state) => state.allUsers);
 
     useEffect(() => {
