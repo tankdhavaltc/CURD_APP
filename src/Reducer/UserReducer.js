@@ -1,16 +1,18 @@
-import { ADD_USER_FAIL, ADD_USER_REQUEST, ADD_USER_SUCCESS, ALL_USERS_FAIL, ALL_USERS_REQUEST, ALL_USERS_SUCCESS, CLEAR_ERRORS, CLEAR_MESSAGE, DELETE_USER_FAIL, DELETE_USER_REQUEST, DELETE_USER_RESET, DELETE_USER_SUCCESS, UPDATE_USER_FAIL, UPDATE_USER_REQUEST, UPDATE_USER_RESET, UPDATE_USER_SUCCESS, USER_DETAILS_FAIL, USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS } from "../constants/userConstants";
+import { ADD_USER_FAIL, ADD_USER_REQUEST, ADD_USER_RESET, ADD_USER_SUCCESS, ALL_USERS_FAIL, ALL_USERS_REQUEST, ALL_USERS_SUCCESS, CLEAR_ERRORS, CLEAR_MESSAGE, DELETE_USER_FAIL, DELETE_USER_REQUEST, DELETE_USER_RESET, DELETE_USER_SUCCESS, UPDATE_USER_FAIL, UPDATE_USER_REQUEST, UPDATE_USER_RESET, UPDATE_USER_SUCCESS, USER_DETAILS_FAIL, USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS } from "../constants/userConstants";
 
 export const userReducer = (state = { user: {} }, action) => {
     switch (action.type) {
         case ADD_USER_REQUEST:
             return {
                 loading: true,
+                isAdded: false,
             };
         case ADD_USER_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 user: action.payload,
+                isAdded: true,
             };
         case ADD_USER_FAIL:
             return {
@@ -18,6 +20,7 @@ export const userReducer = (state = { user: {} }, action) => {
                 loading: false,
                 user: null,
                 error: action.payload,
+                isAdded: false,
             };
 
         case CLEAR_ERRORS:
@@ -26,6 +29,12 @@ export const userReducer = (state = { user: {} }, action) => {
                 loading: false,
                 user: null,
                 error: null,
+                isAdded: false,
+            };
+        case ADD_USER_RESET:
+            return {
+                ...state,
+                isAdded: false,
             };
         default:
             return state;

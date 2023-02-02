@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../NavBar/NavBar'
 import { clearErrors, deleteUser, getAllUsers } from '../../Actions/User';
@@ -17,6 +17,7 @@ const AllUsersList = () => {
     const handelDeleteUser = (id) => {
         dispatch(deleteUser(id));
     }
+
     const handelAddUser = () => {
         navigater(`/user/add`);
     }
@@ -24,10 +25,6 @@ const AllUsersList = () => {
     const handelEditUser = (id) => {
         navigater(`/user/edit/${id}`);
     }
-
-    const gatAllUsers = useCallback(() => {
-        dispatch(getAllUsers());
-    }, [dispatch]);
 
     useEffect(() => {
         if (deleteError) {
@@ -45,7 +42,7 @@ const AllUsersList = () => {
 
     return (
         <div className='container mt-3'>
-            <NavBar gatAllUsers={gatAllUsers} users={users} handelAddUser={handelAddUser} />
+            <NavBar users={users} handelAddUser={handelAddUser} />
             {users.length === 0 ? (
                 <div className="mt-3">
                     <h3 className='text-center'>Users Not Found.</h3>

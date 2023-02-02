@@ -1,14 +1,17 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { addUser, editUser, getAllUsers } from '../../Actions/User';
+import { ADD_USER_RESET, UPDATE_USER_RESET } from '../../constants/userConstants';
 import "./AddEditUser.css";
 
-const AddEditUser = ({ gatAllUsers, users }) => {
+const AddEditUser = ({ users }) => {
+    const { isUpdated } = useSelector((state) => state.profile);
+    const { isAdded } = useSelector((state) => state.user);
     const [user, setUser] = useState();
+    let navigation = useNavigate()
     const closeRef = useRef(null);
-    const navigater = useNavigate();
     const dispatch = useDispatch();
     const { id } = useParams();
     const [isEdit, setIsEdit] = useState(false);
@@ -36,7 +39,7 @@ const AddEditUser = ({ gatAllUsers, users }) => {
             address: "",
             business_name: ""
         });
-        window.history.go("/");
+        navigation("/");
         closeRef.current.click();
         setIsEdit(false);
     }
@@ -75,7 +78,6 @@ const AddEditUser = ({ gatAllUsers, users }) => {
                                 address: address.trim(),
                                 business_name: business_name.trim()
                             }));
-                            toast.success("User edited.");
                             handelClose();
                             setIsError(false);
                         }
@@ -94,13 +96,13 @@ const AddEditUser = ({ gatAllUsers, users }) => {
                             address: address.trim(),
                             business_name: business_name.trim()
                         }));
-                        toast.success("User edited.");
+
                         handelClose();
                         setIsError(false);
+
                     }
                 }
             } else {
-
                 if (checkEmail(formData.email.trim()) === 0) {
                     dispatch(addUser({
                         name: name.trim(),
@@ -110,7 +112,6 @@ const AddEditUser = ({ gatAllUsers, users }) => {
                         address: address.trim(),
                         business_name: business_name.trim()
                     }));
-                    toast.success("User added.");
                     handelClose();
                 } else {
                     toast.warning("Email is already exists");
@@ -138,6 +139,19 @@ const AddEditUser = ({ gatAllUsers, users }) => {
             });
         }
     }, [id, users]);
+
+    useEffect(() => {
+        if (isUpdated) {
+            toast.success("User edited.");
+            dispatch({ type: UPDATE_USER_RESET });
+            dispatch(getAllUsers());
+        }
+        if (isAdded) {
+            toast.success("User Added.");
+            dispatch({ type: ADD_USER_RESET });
+            dispatch(getAllUsers());
+        }
+    }, [dispatch, isAdded, isUpdated]);
 
     return (
         <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
